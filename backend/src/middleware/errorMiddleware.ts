@@ -1,0 +1,48 @@
+import { Request, Response, NextFunction } from 'express';
+
+/**
+ * @summary Error response interface
+ */
+interface ErrorResponse {
+  success: false;
+  error: {
+    code: string;
+    message: string;
+    details?: any;
+  };
+  timestamp: string;
+}
+
+/**
+ * @summary Global error handling middleware
+ * @description Catches and formats all errors in the application
+ *
+ * @param error Error object
+ * @param req Express request object
+ * @param res Express response object
+ * @param next Express next function
+ */
+export async function errorMiddleware(
+  error: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  console.error('Error:', error);
+
+  const statusCode = error.statusCode || error.status || 500;
+  const errorCode = error.code || 'INTERNAL_SERVER_ERROR';
+  const message = error.message || 'An unexpected error occurred';
+
+  const errorResponse: ErrorResponse = {
+    success: false,
+    error: {
+      code: errorCode,
+      message: message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+    },
+    timestamp: new Date().toISOString(),
+  };
+
+  res.status(statusCode).json(errorResponse);
+}
