@@ -24,7 +24,7 @@ export async function getPool(): Promise<sql.ConnectionPool> {
 
       console.log('Database connection established');
 
-      pool.on('error', (err) => {
+      pool.on('error', (err: Error) => {
         console.error('Database pool error:', err);
         pool = null;
       });

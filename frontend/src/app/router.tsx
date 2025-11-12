@@ -4,6 +4,8 @@ import { RootLayout } from '@/pages/layouts/RootLayout';
 import { LoadingSpinner } from '@/core/components/LoadingSpinner';
 
 const HomePage = lazy(() => import('@/pages/Home'));
+const CardapioPage = lazy(() => import('@/pages/Cardapio'));
+const PastelDetailPage = lazy(() => import('@/pages/PastelDetail'));
 const NotFoundPage = lazy(() => import('@/pages/NotFound'));
 
 /**
@@ -22,6 +24,22 @@ export const router = createBrowserRouter([
         element: (
           <Suspense fallback={<LoadingSpinner />}>
             <HomePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'cardapio',
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <CardapioPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'cardapio/:id',
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <PastelDetailPage />
           </Suspense>
         ),
       },
