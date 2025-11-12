@@ -1,0 +1,1 @@
+export { useEstabelecimentoInfo } from './useEstabelecimentoInfo';

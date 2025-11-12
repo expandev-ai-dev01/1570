@@ -1,0 +1,9 @@
+export { HorarioFuncionamento } from './HorarioFuncionamento';
+export { EnderecoMapa } from './EnderecoMapa';
+export { CanaisContato } from './CanaisContato';
+export { HistoriaEstabelecimento } from './HistoriaEstabelecimento';
+export { EquipeProprietarios } from './EquipeProprietarios';
+export { PoliticasEstabelecimento } from './PoliticasEstabelecimento';
+export { CertificacoesPremios } from './CertificacoesPremios';
+export { PerguntasFrequentes } from './PerguntasFrequentes';
+export { InformacoesAcessibilidade } from './InformacoesAcessibilidade';

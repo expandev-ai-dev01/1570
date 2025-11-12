@@ -6,6 +6,8 @@ import { LoadingSpinner } from '@/core/components/LoadingSpinner';
 const HomePage = lazy(() => import('@/pages/Home'));
 const CardapioPage = lazy(() => import('@/pages/Cardapio'));
 const PastelDetailPage = lazy(() => import('@/pages/PastelDetail'));
+const GaleriaPage = lazy(() => import('@/pages/Galeria'));
+const EstabelecimentoPage = lazy(() => import('@/pages/Estabelecimento'));
 const NotFoundPage = lazy(() => import('@/pages/NotFound'));
 
 /**
@@ -40,6 +42,22 @@ export const router = createBrowserRouter([
         element: (
           <Suspense fallback={<LoadingSpinner />}>
             <PastelDetailPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'galeria',
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <GaleriaPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'estabelecimento',
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <EstabelecimentoPage />
           </Suspense>
         ),
       },
