@@ -8,6 +8,8 @@ const CardapioPage = lazy(() => import('@/pages/Cardapio'));
 const PastelDetailPage = lazy(() => import('@/pages/PastelDetail'));
 const GaleriaPage = lazy(() => import('@/pages/Galeria'));
 const EstabelecimentoPage = lazy(() => import('@/pages/Estabelecimento'));
+const PromocoesPage = lazy(() => import('@/pages/Promocoes'));
+const PromocaoDetailPage = lazy(() => import('@/pages/PromocaoDetail'));
 const NotFoundPage = lazy(() => import('@/pages/NotFound'));
 
 /**
@@ -58,6 +60,22 @@ export const router = createBrowserRouter([
         element: (
           <Suspense fallback={<LoadingSpinner />}>
             <EstabelecimentoPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'promocoes',
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <PromocoesPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'promocoes/:id',
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <PromocaoDetailPage />
           </Suspense>
         ),
       },

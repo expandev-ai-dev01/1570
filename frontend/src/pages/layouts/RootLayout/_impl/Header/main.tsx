@@ -22,6 +22,9 @@ export const Header = () => {
             <Link to="/cardapio" className="text-gray-700 hover:text-gray-900">
               Cardápio
             </Link>
+            <Link to="/promocoes" className="text-gray-700 hover:text-gray-900">
+              Promoções
+            </Link>
             <Link to="/galeria" className="text-gray-700 hover:text-gray-900">
               Galeria
             </Link>

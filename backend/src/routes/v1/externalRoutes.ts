@@ -4,6 +4,8 @@ import * as pastelController from '@/api/v1/external/public/pastel/controller';
 import * as galeriaCategoriaController from '@/api/v1/external/public/galeria/categoria/controller';
 import * as galeriaFotoController from '@/api/v1/external/public/galeria/foto/controller';
 import * as estabelecimentoController from '@/api/v1/external/public/estabelecimento/controller';
+import * as promocaoController from '@/api/v1/external/public/promocao/controller';
+import * as novoSaborController from '@/api/v1/external/public/novo-sabor/controller';
 
 const router = Router();
 
@@ -34,5 +36,16 @@ router.get('/public/galeria/foto/:id', galeriaFotoController.getHandler);
  * @summary Estabelecimento routes
  */
 router.get('/public/estabelecimento', estabelecimentoController.getHandler);
+
+/**
+ * @summary Promocao routes
+ */
+router.get('/public/promocao', promocaoController.listHandler);
+router.get('/public/promocao/:id', promocaoController.getHandler);
+
+/**
+ * @summary Novo Sabor routes
+ */
+router.get('/public/novo-sabor', novoSaborController.listHandler);
 
 export default router;

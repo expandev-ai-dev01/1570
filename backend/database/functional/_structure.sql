@@ -647,3 +647,180 @@ GO
 CREATE NONCLUSTERED INDEX [ixImagemAcessibilidade_Estabelecimento_Ordem]
 ON [functional].[imagemAcessibilidade]([idEstabelecimento], [ordem]);
 GO
+
+/**
+ * @table promocao Brief: Promoções e novidades
+ * @multitenancy false
+ * @softDelete false
+ * @alias prm
+ */
+CREATE TABLE [functional].[promocao] (
+  [idPromocao] INTEGER IDENTITY(1, 1) NOT NULL,
+  [titulo] NVARCHAR(100) NOT NULL,
+  [descricao] NVARCHAR(500) NOT NULL,
+  [dataInicio] DATE NOT NULL,
+  [dataTermino] DATE NOT NULL,
+  [categoria] VARCHAR(20) NOT NULL,
+  [desconto] NUMERIC(5, 2) NULL,
+  [valorPromocional] NUMERIC(18, 6) NULL,
+  [imagemUrl] NVARCHAR(500) NOT NULL,
+  [status] VARCHAR(20) NOT NULL DEFAULT ('agendada'),
+  [termosCondicoes] NVARCHAR(1000) NULL,
+  [destaque] BIT NOT NULL DEFAULT (0),
+  [dataCriacao] DATETIME2 NOT NULL DEFAULT (GETUTCDATE()),
+  [dataAtualizacao] DATETIME2 NOT NULL DEFAULT (GETUTCDATE())
+);
+GO
+
+/**
+ * @primaryKey pkPromocao
+ * @keyType Object
+ */
+ALTER TABLE [functional].[promocao]
+ADD CONSTRAINT [pkPromocao] PRIMARY KEY CLUSTERED ([idPromocao]);
+GO
+
+/**
+ * @check chkPromocao_Categoria Valid category
+ */
+ALTER TABLE [functional].[promocao]
+ADD CONSTRAINT [chkPromocao_Categoria] CHECK ([categoria] IN ('diaria', 'semanal', 'sazonal', 'data_comemorativa'));
+/*
+  diaria - Promoção diária
+  semanal - Promoção semanal
+  sazonal - Promoção sazonal
+  data_comemorativa - Promoção de data comemorativa
+*/
+GO
+
+/**
+ * @check chkPromocao_Status Valid status
+ */
+ALTER TABLE [functional].[promocao]
+ADD CONSTRAINT [chkPromocao_Status] CHECK ([status] IN ('agendada', 'ativa', 'encerrada'));
+/*
+  agendada - Promoção agendada
+  ativa - Promoção ativa
+  encerrada - Promoção encerrada
+*/
+GO
+
+/**
+ * @check chkPromocao_Desconto Valid discount range
+ */
+ALTER TABLE [functional].[promocao]
+ADD CONSTRAINT [chkPromocao_Desconto] CHECK ([desconto] IS NULL OR ([desconto] >= 0.01 AND [desconto] <= 100.00));
+GO
+
+/**
+ * @check chkPromocao_ValorPromocional Valid promotional value
+ */
+ALTER TABLE [functional].[promocao]
+ADD CONSTRAINT [chkPromocao_ValorPromocional] CHECK ([valorPromocional] IS NULL OR [valorPromocional] > 0);
+GO
+
+/**
+ * @check chkPromocao_DataTermino End date must be after start date
+ */
+ALTER TABLE [functional].[promocao]
+ADD CONSTRAINT [chkPromocao_DataTermino] CHECK ([dataTermino] > [dataInicio]);
+GO
+
+/**
+ * @index ixPromocao_Status_DataInicio
+ * @type Performance
+ * @filter Optimizes listing by status and date
+ */
+CREATE NONCLUSTERED INDEX [ixPromocao_Status_DataInicio]
+ON [functional].[promocao]([status], [dataInicio] DESC)
+INCLUDE ([titulo], [categoria], [destaque]);
+GO
+
+/**
+ * @index ixPromocao_Categoria_Status
+ * @type Performance
+ * @filter Optimizes category filtering
+ */
+CREATE NONCLUSTERED INDEX [ixPromocao_Categoria_Status]
+ON [functional].[promocao]([categoria], [status])
+INCLUDE ([dataInicio], [dataTermino]);
+GO
+
+/**
+ * @index ixPromocao_Destaque_Status
+ * @type Performance
+ * @filter Optimizes featured promotions listing
+ */
+CREATE NONCLUSTERED INDEX [ixPromocao_Destaque_Status]
+ON [functional].[promocao]([destaque] DESC, [status])
+WHERE [destaque] = 1;
+GO
+
+/**
+ * @index ixPromocao_DataTermino
+ * @type Performance
+ * @filter Optimizes date range queries
+ */
+CREATE NONCLUSTERED INDEX [ixPromocao_DataTermino]
+ON [functional].[promocao]([dataTermino] DESC)
+INCLUDE ([idPromocao], [status]);
+GO
+
+/**
+ * @table novoSabor Brief: Novos sabores adicionados ao cardápio
+ * @multitenancy false
+ * @softDelete false
+ * @alias novSab
+ */
+CREATE TABLE [functional].[novoSabor] (
+  [idNovoSabor] INTEGER IDENTITY(1, 1) NOT NULL,
+  [idPastel] INTEGER NOT NULL,
+  [dataAdicao] DATE NOT NULL,
+  [periodoNovidade] INTEGER NOT NULL DEFAULT (30),
+  [destaqueHome] BIT NOT NULL DEFAULT (1),
+  [dataCriacao] DATETIME2 NOT NULL DEFAULT (GETUTCDATE())
+);
+GO
+
+/**
+ * @primaryKey pkNovoSabor
+ * @keyType Object
+ */
+ALTER TABLE [functional].[novoSabor]
+ADD CONSTRAINT [pkNovoSabor] PRIMARY KEY CLUSTERED ([idNovoSabor]);
+GO
+
+/**
+ * @foreignKey fkNovoSabor_Pastel Relationship between novoSabor and pastel
+ * @target functional.pastel
+ */
+ALTER TABLE [functional].[novoSabor]
+ADD CONSTRAINT [fkNovoSabor_Pastel] FOREIGN KEY ([idPastel])
+REFERENCES [functional].[pastel]([idPastel]);
+GO
+
+/**
+ * @check chkNovoSabor_PeriodoNovidade Valid period range
+ */
+ALTER TABLE [functional].[novoSabor]
+ADD CONSTRAINT [chkNovoSabor_PeriodoNovidade] CHECK ([periodoNovidade] BETWEEN 7 AND 90);
+GO
+
+/**
+ * @index ixNovoSabor_Pastel
+ * @type ForeignKey
+ * @unique true
+ */
+CREATE UNIQUE NONCLUSTERED INDEX [ixNovoSabor_Pastel]
+ON [functional].[novoSabor]([idPastel]);
+GO
+
+/**
+ * @index ixNovoSabor_DataAdicao_DestaqueHome
+ * @type Performance
+ * @filter Optimizes listing of new flavors with highlight
+ */
+CREATE NONCLUSTERED INDEX [ixNovoSabor_DataAdicao_DestaqueHome]
+ON [functional].[novoSabor]([dataAdicao] DESC, [destaqueHome] DESC)
+INCLUDE ([idPastel], [periodoNovidade]);
+GO
